@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9846e3152df8c4ad4a441d834b80632d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  configuration: {fileID: 0}
+  config: {fileID: 11400000, guid: d55afc90006ce4e898b7ded3bc945d65, type: 2}
   allowAttachmentTop: 1
   allowAttachmentBottom: 1
   allowAttachmentLeft: 1
@@ -56,6 +56,7 @@ MonoBehaviour:
   attachmentAreaPrefab: {fileID: 3074376381264656350, guid: 754d241305bd7467db66a5b5f8dcb92d,
     type: 3}
   center: {fileID: 2394922988109244527}
+  robot: {fileID: 0}
 --- !u!114 &2349946764994493628
 MonoBehaviour:
   m_ObjectHideFlags: 0

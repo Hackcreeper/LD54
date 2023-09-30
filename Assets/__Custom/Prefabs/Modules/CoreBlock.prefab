@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9846e3152df8c4ad4a441d834b80632d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  config: {fileID: 11400000, guid: 9052b91d18bc24f6d9c546a3805b5277, type: 2}
   allowAttachmentTop: 1
   allowAttachmentBottom: 1
   allowAttachmentLeft: 1

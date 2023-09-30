@@ -1,5 +1,8 @@
 using Hackcreeper.LD54.Helper;
 using Hackcreeper.LD54.Robot.Data;
+using Hackcreeper.LD54.Robot.Enums;
+using Hackcreeper.LD54.Robot.Systems;
+using UniDi;
 using UnityEngine;
 
 namespace Hackcreeper.LD54.Robot.Components
@@ -9,7 +12,7 @@ namespace Hackcreeper.LD54.Robot.Components
         #region EXPOSED FIELDS
 
         [SerializeField] private RobotBrain robot;
-        
+
         [SerializeField] private ModuleSo[] availableModules;
         [SerializeField] private LayerMask attachmentAreaLayerMask;
 
@@ -18,6 +21,8 @@ namespace Hackcreeper.LD54.Robot.Components
         #region VARIABLES
 
         private RobotModule _activeModule;
+
+        [Inject] private readonly RobotLimit _robotLimit;
 
         #endregion
 
@@ -60,7 +65,7 @@ namespace Hackcreeper.LD54.Robot.Components
         }
 
         #endregion
-        
+
         #region PRIVATE METHODS
 
         private void MoveActiveModule()
@@ -78,7 +83,7 @@ namespace Hackcreeper.LD54.Robot.Components
 
         private void PlaceActiveModule()
         {
-            if (!_activeModule.CanBePlaced())
+            if (!_activeModule.CanBePlaced() || robot.Count(ModuleType.Structure) >= _robotLimit.MaxStructureModules)
             {
                 return;
             }

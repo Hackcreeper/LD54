@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Hackcreeper.LD54.Robot.Enums;
 using Hackcreeper.LD54.Robot.Signals;
 using UniDi;
 using UnityEngine;
@@ -50,6 +52,11 @@ namespace Hackcreeper.LD54.Robot.Components
 
         public RobotModule GetCoreModule() => coreModule;
 
+        public int Count(ModuleType type)
+        {
+            return _modules.Values.Count(module => module.GetConfig().type == type);
+        }
+        
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 using Hackcreeper.LD54.Robot.Signals;
+using Hackcreeper.LD54.Robot.Systems;
 using UniDi;
 
 namespace Hackcreeper.LD54.Robot.Di
@@ -9,6 +10,8 @@ namespace Hackcreeper.LD54.Robot.Di
         {
             SignalBusInstaller.Install(Container);
             Container.DeclareSignal<ModuleAttachedSignal>();
+
+            Container.Bind<RobotLimit>().AsSingle();
         }
     }
 }

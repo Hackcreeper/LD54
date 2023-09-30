@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hackcreeper.LD54.Robot.Data;
 using Hackcreeper.LD54.Robot.Enums;
 using Hackcreeper.LD54.Robot.Signals;
 using UniDi;
@@ -10,6 +11,8 @@ namespace Hackcreeper.LD54.Robot.Components
     public class RobotModule : MonoBehaviour
     {
         #region EXPOSED FIELDS
+
+        [Header("Config")] [SerializeField] private ModuleSo config;
 
         [Header("Attachments")] [SerializeField]
         private bool allowAttachmentTop;
@@ -26,6 +29,10 @@ namespace Hackcreeper.LD54.Robot.Components
         [SerializeField] private Transform center;
 
         [SerializeField] private RobotBrain robot;
+
+        [Header("Materials")] [SerializeField] private Material errorMaterial;
+
+        [SerializeField] private MeshRenderer[] meshRenderers;
 
         #endregion
 
@@ -128,6 +135,10 @@ namespace Hackcreeper.LD54.Robot.Components
         }
 
         public bool CanBePlaced() => _mode == ModuleMode.StickyPlaceholder;
+
+        public ModuleSo GetConfig() => config;
+
+        public RobotBrain GetRobot() => robot;
 
         #endregion
 
