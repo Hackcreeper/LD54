@@ -84,3 +84,5 @@ publish-demo.sh
 # Hot Module Reloading (Payed asset)
 /[Pp]ackages/com.singularitygroup.hotreload
 
+# Mac Specific
+.DS_Store
