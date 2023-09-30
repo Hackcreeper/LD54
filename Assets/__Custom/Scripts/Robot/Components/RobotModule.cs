@@ -77,8 +77,8 @@ namespace Hackcreeper.LD54.Robot.Components
             RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(1, 0, 0), AttachmentSide.Right);
             RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(0, 0, 1), AttachmentSide.Front);
             RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(0, 0, -1), AttachmentSide.Back);
-            RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(0, 0, 1), AttachmentSide.Top);
-            RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(0, 0, -1), AttachmentSide.Bottom);
+            RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(0, 1, 0), AttachmentSide.Top);
+            RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(0, -1, 0), AttachmentSide.Bottom);
         }
 
         #endregion

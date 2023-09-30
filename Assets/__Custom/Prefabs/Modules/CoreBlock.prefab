@@ -145,7 +145,15 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -8441324318408302058, guid: d59d56ae7cf224331908627addf99c65,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8334578612657081574}
+    - targetCorrespondingSourceObject: {fileID: 999758157018172199, guid: d59d56ae7cf224331908627addf99c65,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8178072370726621151}
   m_SourcePrefab: {fileID: 100100000, guid: d59d56ae7cf224331908627addf99c65, type: 3}
 --- !u!4 &6136558975836780691 stripped
 Transform:
@@ -153,3 +161,41 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5954839103576022904}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6375323409511431534 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8441324318408302058, guid: d59d56ae7cf224331908627addf99c65,
+    type: 3}
+  m_PrefabInstance: {fileID: 5954839103576022904}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8334578612657081574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6375323409511431534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2203e793f112c6d449f28ee34a6ec9fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: {x: 0, y: 0, z: 30}
+--- !u!1 &6880387672580232287 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 999758157018172199, guid: d59d56ae7cf224331908627addf99c65,
+    type: 3}
+  m_PrefabInstance: {fileID: 5954839103576022904}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8178072370726621151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880387672580232287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2203e793f112c6d449f28ee34a6ec9fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: {x: 0, y: 0, z: -60}
