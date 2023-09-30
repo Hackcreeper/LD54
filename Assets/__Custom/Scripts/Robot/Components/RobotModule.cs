@@ -66,9 +66,11 @@ namespace Hackcreeper.LD54.Robot.Components
             }
 
             // Move object to cursor
+            var offset = center.transform.position - transform.position;
+            
             var mousePosition = Input.mousePosition;
             mousePosition.z = 10;
-            transform.position = _mainCamera.ScreenToWorldPoint(mousePosition);
+            transform.position = _mainCamera.ScreenToWorldPoint(mousePosition) - offset;
         }
 
         private void OnDisable()
@@ -155,6 +157,8 @@ namespace Hackcreeper.LD54.Robot.Components
             }
         }
 
+        public Transform GetCenter() => center;
+        
         #endregion
 
         #region PRIVATE METHODS
