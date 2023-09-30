@@ -1,0 +1,16 @@
+{
+    "name": "Game",
+    "rootNamespace": "Hackcreeper.LD54",
+    "references": [
+        "GUID:4d6070404d0419b458bac1694fc1ad45"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
