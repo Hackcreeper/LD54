@@ -42,8 +42,11 @@ namespace Hackcreeper.LD54.Robot.Components
         {
             if (_activeModule)
             {
+                var side = _activeModule.GetActiveAttachmentArea()?.GetSide();
+
                 _activeModule.SetErrorState(
-                    !_activeModule.CanBePlaced() || robot.Count(ModuleType.Structure) >= _robotLimit.MaxStructureModules                
+                    !_activeModule.CanBePlaced(side ?? AttachmentSide.Back) ||
+                    robot.Count(ModuleType.Structure) >= _robotLimit.MaxStructureModules
                 );
 
                 if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace))
@@ -52,7 +55,7 @@ namespace Hackcreeper.LD54.Robot.Components
                     _activeModule = null;
                     return;
                 }
-                
+
                 if (Input.GetMouseButtonDown(0))
                 {
                     PlaceActiveModule();
@@ -70,10 +73,10 @@ namespace Hackcreeper.LD54.Robot.Components
 
             var randomModule = availableModules[Random.Range(0, availableModules.Length)];
             var module = Instantiate(randomModule.prefab);
-            
+
             _activeModule = module.GetComponent<RobotModule>();
             _activeModule.EnablePlaceholderMode();
-            
+
             var offset = _activeModule.GetCenter().position - _activeModule.transform.position;
             var mousePosition = Input.mousePosition;
             mousePosition.z = 10;
@@ -99,7 +102,10 @@ namespace Hackcreeper.LD54.Robot.Components
 
         private void PlaceActiveModule()
         {
-            if (!_activeModule.CanBePlaced() || robot.Count(ModuleType.Structure) >= _robotLimit.MaxStructureModules)
+            var side = _activeModule.GetActiveAttachmentArea()?.GetSide();
+
+            if (!_activeModule.CanBePlaced(side ?? AttachmentSide.Top) ||
+                robot.Count(ModuleType.Structure) >= _robotLimit.MaxStructureModules)
             {
                 return;
             }

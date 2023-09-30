@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Hackcreeper.LD54.Robot.Data;
 using Hackcreeper.LD54.Robot.Enums;
 using Hackcreeper.LD54.Robot.Signals;
@@ -13,6 +14,7 @@ namespace Hackcreeper.LD54.Robot.Components
         #region EXPOSED FIELDS
 
         [Header("Config")] [SerializeField] private ModuleSo config;
+        [SerializeField] private SideScaleStruct[] scaleRules;
 
         [Header("Attachments")] [SerializeField]
         private bool allowAttachmentTop;
@@ -23,6 +25,14 @@ namespace Hackcreeper.LD54.Robot.Components
         [SerializeField] private bool allowAttachmentFront;
         [SerializeField] private bool allowAttachmentBack;
 
+        [Header("Attachments Rules")] [SerializeField]
+        private bool allowAttachedBottom;
+
+        [SerializeField] private bool allowAttachedLeft;
+        [SerializeField] private bool allowAttachedRight;
+        [SerializeField] private bool allowAttachedFront;
+        [SerializeField] private bool allowAttachedBack;
+
         [Header("References")] [SerializeField]
         private GameObject attachmentAreaPrefab;
 
@@ -31,7 +41,7 @@ namespace Hackcreeper.LD54.Robot.Components
         [SerializeField] private RobotBrain robot;
 
         [Header("Materials")] [SerializeField] private Material errorMaterial;
-        
+
         [SerializeField] private Material defaultMaterial;
 
         [SerializeField] private MeshRenderer[] meshRenderers;
@@ -67,7 +77,7 @@ namespace Hackcreeper.LD54.Robot.Components
 
             // Move object to cursor
             var offset = center.transform.position - transform.position;
-            
+
             var mousePosition = Input.mousePosition;
             mousePosition.z = 10;
             transform.position = _mainCamera.ScreenToWorldPoint(mousePosition) - offset;
@@ -111,6 +121,11 @@ namespace Hackcreeper.LD54.Robot.Components
             trans.rotation = areaTrans.rotation;
 
             _activeAttachmentArea = area;
+            
+            foreach (var rule in scaleRules.Where(rule => rule.side == area.GetSide()))
+            {
+                trans.localScale = rule.scale;
+            }
         }
 
         public void Place(Vector3 position, Vector3 rotation, Vector3Int gridPos, RobotBrain brain)
@@ -119,7 +134,7 @@ namespace Hackcreeper.LD54.Robot.Components
             {
                 meshRenderer.material = defaultMaterial;
             }
-            
+
             robot = brain;
 
             _mode = ModuleMode.Placed;
@@ -143,7 +158,20 @@ namespace Hackcreeper.LD54.Robot.Components
             );
         }
 
-        public bool CanBePlaced() => _mode == ModuleMode.StickyPlaceholder;
+        public bool CanBePlaced(AttachmentSide side)
+        {
+            if (_mode != ModuleMode.StickyPlaceholder)
+            {
+                return false;
+            }
+
+            return (side == AttachmentSide.Back && allowAttachedBack)
+                   || (side == AttachmentSide.Bottom && allowAttachedBottom)
+                   || (side == AttachmentSide.Front && allowAttachedFront)
+                   || (side == AttachmentSide.Top && allowAttachmentTop)
+                   || (side == AttachmentSide.Left && allowAttachedLeft)
+                   || (side == AttachmentSide.Right && allowAttachedRight);
+        }
 
         public ModuleSo GetConfig() => config;
 
@@ -158,7 +186,9 @@ namespace Hackcreeper.LD54.Robot.Components
         }
 
         public Transform GetCenter() => center;
-        
+
+        public AttachmentArea GetActiveAttachmentArea() => _activeAttachmentArea;
+
         #endregion
 
         #region PRIVATE METHODS

@@ -155,6 +155,7 @@ MonoBehaviour:
   robot: {fileID: 1323021822}
   availableModules:
   - {fileID: 11400000, guid: d55afc90006ce4e898b7ded3bc945d65, type: 2}
+  - {fileID: 11400000, guid: 8b12e4c7be09943cab708970181e801b, type: 2}
   attachmentAreaLayerMask:
     serializedVersion: 2
     m_Bits: 64

@@ -15,7 +15,7 @@ namespace Hackcreeper.LD54.Player.Components
         #region VARIABLES
 
         private Vector3 _lastMousePosition;
-        private Vector2 _rotationAngle = new(0, 5f);
+        private Vector2 _rotationAngle = new(250 * Mathf.Deg2Rad, 5f);
         private bool _firstFrame = true;
 
         #endregion 

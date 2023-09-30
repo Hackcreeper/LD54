@@ -47,12 +47,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: d55afc90006ce4e898b7ded3bc945d65, type: 2}
+  scaleRules: []
   allowAttachmentTop: 1
   allowAttachmentBottom: 1
   allowAttachmentLeft: 1
   allowAttachmentRight: 1
   allowAttachmentFront: 1
   allowAttachmentBack: 1
+  allowAttachedBottom: 1
+  allowAttachedLeft: 1
+  allowAttachedRight: 1
+  allowAttachedFront: 1
+  allowAttachedBack: 1
   attachmentAreaPrefab: {fileID: 3074376381264656350, guid: 754d241305bd7467db66a5b5f8dcb92d,
     type: 3}
   center: {fileID: 2394922988109244527}
