@@ -68,11 +68,15 @@ namespace Hackcreeper.LD54.Robot.Components
                 return;
             }
 
-            var randomModule = availableModules[UnityEngine.Random.Range(0, availableModules.Length)];
+            var randomModule = availableModules[Random.Range(0, availableModules.Length)];
             var module = Instantiate(randomModule.prefab);
-            module.GetComponent<RobotModule>().EnablePlaceholderMode();
+            
+            var mousePosition = Input.mousePosition;
+            mousePosition.z = 10;
+            module.transform.position = Camera.main.ScreenToWorldPoint(mousePosition);
 
             _activeModule = module.GetComponent<RobotModule>();
+            _activeModule.EnablePlaceholderMode();
         }
 
         #endregion

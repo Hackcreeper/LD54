@@ -34,8 +34,8 @@ namespace Hackcreeper.LD54.Player.Components
                     _rotationAngle.x += deltaX;
                     _rotationAngle.y += deltaY;
                     
-                    const float minPitch = 8f;
-                    const float maxPitch = 13f;
+                    const float minPitch = 2f;
+                    const float maxPitch = 7f;
 
                     _rotationAngle.y = Mathf.Clamp(_rotationAngle.y, minPitch, maxPitch);
                 }
