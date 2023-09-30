@@ -47,14 +47,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configuration: {fileID: 0}
   allowAttachmentTop: 1
-  allowAttachmentBottom: 0
-  allowAttachmentLeft: 0
-  allowAttachmentRight: 0
-  allowAttachmentFront: 0
-  allowAttachmentBack: 0
+  allowAttachmentBottom: 1
+  allowAttachmentLeft: 1
+  allowAttachmentRight: 1
+  allowAttachmentFront: 1
+  allowAttachmentBack: 1
   attachmentAreaPrefab: {fileID: 3074376381264656350, guid: 754d241305bd7467db66a5b5f8dcb92d,
     type: 3}
-  center: {fileID: 813303600702743684}
+  center: {fileID: 2394922988109244527}
 --- !u!1001 &4085451780424374282
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -124,9 +124,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6c43c5b7eca24f50b95319a8d48f013, type: 3}
---- !u!4 &813303600702743684 stripped
+--- !u!4 &2394922988109244527 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: -5477749408508380018, guid: a6c43c5b7eca24f50b95319a8d48f013,
+  m_CorrespondingSourceObject: {fileID: 1841419723498434661, guid: a6c43c5b7eca24f50b95319a8d48f013,
     type: 3}
   m_PrefabInstance: {fileID: 4085451780424374282}
   m_PrefabAsset: {fileID: 0}

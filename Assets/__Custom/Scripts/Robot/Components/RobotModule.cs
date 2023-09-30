@@ -102,7 +102,7 @@ namespace Hackcreeper.LD54.Robot.Components
         private void AttachModule(AttachmentSide side, RobotModule module)
         {
             _attachedModules.Add(side, module);
-            module.Place(transform.position, GetRotation(side));
+            module.Place(center.position, GetRotation(side));
             module.transform.SetParent(transform);
 
             if (!_attachmentAreas.ContainsKey(side))
@@ -146,7 +146,7 @@ namespace Hackcreeper.LD54.Robot.Components
         {
             var area = Instantiate(attachmentAreaPrefab, transform);
             area.transform.position = center.position;
-            area.transform.Rotate(GetRotation(side));
+            area.transform.rotation = Quaternion.Euler(GetRotation(side));
             
             var areaComponent = area.GetComponent<AttachmentArea>();
             areaComponent.Initialize(this, side);
