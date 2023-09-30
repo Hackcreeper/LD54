@@ -976,6 +976,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 40
   distance: 10
+  scrollSpeed: 3
 --- !u!1 &2086916280
 GameObject:
   m_ObjectHideFlags: 0

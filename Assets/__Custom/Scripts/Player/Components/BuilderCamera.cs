@@ -6,8 +6,9 @@ namespace Hackcreeper.LD54.Player.Components
     {
         #region EXPOSED FIELDS
 
-        [SerializeField] private float rotationSpeed = .5f;
-        [SerializeField] private float distance = 5f;
+        [SerializeField] private float rotationSpeed = 40f;
+        [SerializeField] private float distance = 10f;
+        [SerializeField] private float scrollSpeed = 2.5f;
 
         #endregion
 
@@ -33,7 +34,7 @@ namespace Hackcreeper.LD54.Player.Components
                     _rotationAngle.x += deltaX;
                     _rotationAngle.y += deltaY;
                     
-                    const float minPitch = 8;
+                    const float minPitch = 8f;
                     const float maxPitch = 13f;
 
                     _rotationAngle.y = Mathf.Clamp(_rotationAngle.y, minPitch, maxPitch);
@@ -46,6 +47,9 @@ namespace Hackcreeper.LD54.Player.Components
             {
                 _firstFrame = true;
             }
+
+            distance += Input.mouseScrollDelta.y * Time.deltaTime * scrollSpeed;
+            distance = Mathf.Clamp(distance, 3f, 15f);
 
             var r = distance;
             var theta = _rotationAngle.y * Mathf.Deg2Rad * rotationSpeed;
