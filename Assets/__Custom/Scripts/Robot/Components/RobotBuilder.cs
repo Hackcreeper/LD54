@@ -42,6 +42,10 @@ namespace Hackcreeper.LD54.Robot.Components
         {
             if (_activeModule)
             {
+                _activeModule.SetErrorState(
+                    !_activeModule.CanBePlaced() || robot.Count(ModuleType.Structure) >= _robotLimit.MaxStructureModules                
+                );
+                
                 if (Input.GetMouseButtonDown(0))
                 {
                     PlaceActiveModule();

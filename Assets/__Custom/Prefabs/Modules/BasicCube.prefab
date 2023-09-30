@@ -57,6 +57,11 @@ MonoBehaviour:
     type: 3}
   center: {fileID: 2394922988109244527}
   robot: {fileID: 0}
+  errorMaterial: {fileID: 2100000, guid: 647cf776070904ebdbc4176a50d96ed7, type: 2}
+  defaultMaterial: {fileID: 7729333818298354667, guid: d59d56ae7cf224331908627addf99c65,
+    type: 3}
+  meshRenderers:
+  - {fileID: 554561966454066885}
 --- !u!114 &2349946764994493628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,6 +144,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6c43c5b7eca24f50b95319a8d48f013, type: 3}
+--- !u!23 &554561966454066885 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -4683669308469848369, guid: a6c43c5b7eca24f50b95319a8d48f013,
+    type: 3}
+  m_PrefabInstance: {fileID: 4085451780424374282}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2394922988109244527 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1841419723498434661, guid: a6c43c5b7eca24f50b95319a8d48f013,

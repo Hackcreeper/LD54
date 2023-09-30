@@ -31,6 +31,8 @@ namespace Hackcreeper.LD54.Robot.Components
         [SerializeField] private RobotBrain robot;
 
         [Header("Materials")] [SerializeField] private Material errorMaterial;
+        
+        [SerializeField] private Material defaultMaterial;
 
         [SerializeField] private MeshRenderer[] meshRenderers;
 
@@ -111,6 +113,11 @@ namespace Hackcreeper.LD54.Robot.Components
 
         public void Place(Vector3 position, Vector3 rotation, Vector3Int gridPos, RobotBrain brain)
         {
+            foreach (var meshRenderer in meshRenderers)
+            {
+                meshRenderer.material = defaultMaterial;
+            }
+            
             robot = brain;
 
             _mode = ModuleMode.Placed;
@@ -139,6 +146,14 @@ namespace Hackcreeper.LD54.Robot.Components
         public ModuleSo GetConfig() => config;
 
         public RobotBrain GetRobot() => robot;
+
+        public void SetErrorState(bool error)
+        {
+            foreach (var meshRenderer in meshRenderers)
+            {
+                meshRenderer.material = error ? errorMaterial : defaultMaterial;
+            }
+        }
 
         #endregion
 
