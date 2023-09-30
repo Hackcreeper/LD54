@@ -42,8 +42,6 @@ namespace Hackcreeper.LD54.Robot.Components
 
         [Header("Materials")] [SerializeField] private Material errorMaterial;
 
-        [SerializeField] private Material defaultMaterial;
-
         [SerializeField] private MeshRenderer[] meshRenderers;
 
         #endregion
@@ -54,8 +52,10 @@ namespace Hackcreeper.LD54.Robot.Components
         private Camera _mainCamera;
         private AttachmentArea _activeAttachmentArea;
         private Vector3Int _gridPosition = Vector3Int.zero;
+        private bool _errorEnabled;
 
         private readonly Dictionary<AttachmentSide, AttachmentArea> _attachmentAreas = new();
+        private readonly List<Tuple<MeshRenderer, int, Material>> _originalMaterials = new();
 
         [Inject] private readonly SignalBus _signalBus;
 
@@ -121,7 +121,7 @@ namespace Hackcreeper.LD54.Robot.Components
             trans.rotation = areaTrans.rotation;
 
             _activeAttachmentArea = area;
-            
+
             foreach (var rule in scaleRules.Where(rule => rule.side == area.GetSide()))
             {
                 trans.localScale = rule.scale;
@@ -130,11 +130,8 @@ namespace Hackcreeper.LD54.Robot.Components
 
         public void Place(Vector3 position, Vector3 rotation, Vector3Int gridPos, RobotBrain brain)
         {
-            foreach (var meshRenderer in meshRenderers)
-            {
-                meshRenderer.material = defaultMaterial;
-            }
-
+            TurnOffError();
+            
             robot = brain;
 
             _mode = ModuleMode.Placed;
@@ -179,10 +176,14 @@ namespace Hackcreeper.LD54.Robot.Components
 
         public void SetErrorState(bool error)
         {
-            foreach (var meshRenderer in meshRenderers)
+            Debug.Log(error);
+            if (error)
             {
-                meshRenderer.material = error ? errorMaterial : defaultMaterial;
+                TurnOnError();
+                return;
             }
+            
+            TurnOffError();
         }
 
         public Transform GetCenter() => center;
@@ -289,6 +290,60 @@ namespace Hackcreeper.LD54.Robot.Components
             }
 
             DestroyAttachmentArea(side);
+        }
+
+        private void TurnOnError()
+        {
+            if (_errorEnabled)
+            {
+                return;
+            }
+
+            _errorEnabled = true;
+            _originalMaterials.Clear();
+
+            Dictionary<MeshRenderer, List<Material>> materials = new();
+            
+            foreach (var meshRenderer in meshRenderers)
+            {
+                for (var i = 0; i < meshRenderer.materials.Length; i++)
+                {
+                    _originalMaterials.Add(new Tuple<MeshRenderer, int, Material>(
+                        meshRenderer,
+                        i,
+                        meshRenderer.materials[i]
+                    ));
+
+                    materials.TryAdd(meshRenderer, new List<Material>());
+                    materials[meshRenderer].Add(errorMaterial);
+                }
+                meshRenderer.SetMaterials(materials[meshRenderer]);
+            }
+        }
+
+        private void TurnOffError()
+        {
+            if (!_errorEnabled)
+            {
+                return;
+            }
+
+            _errorEnabled = false;
+            
+            Dictionary<MeshRenderer, List<Material>> materials = new();
+            
+            foreach (var original in _originalMaterials)
+            {
+                materials.TryAdd(original.Item1, new List<Material>());
+                materials[original.Item1].Add(original.Item3);
+            }
+
+            foreach (var material in materials)
+            {
+                material.Key.SetMaterials(material.Value);
+            }
+            
+            _originalMaterials.Clear();
         }
 
         #endregion
