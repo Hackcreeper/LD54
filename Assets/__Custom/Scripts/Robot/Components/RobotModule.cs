@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Hackcreeper.LD54.Robot.Data;
 using Hackcreeper.LD54.Robot.Enums;
+using Hackcreeper.LD54.Robot.Signals;
+using UniDi;
 using UnityEngine;
 
 namespace Hackcreeper.LD54.Robot.Components
@@ -9,8 +10,6 @@ namespace Hackcreeper.LD54.Robot.Components
     public class RobotModule : MonoBehaviour
     {
         #region EXPOSED FIELDS
-
-        [Header("General")] [SerializeField] private ModuleSo configuration;
 
         [Header("Attachments")] [SerializeField]
         private bool allowAttachmentTop;
@@ -26,6 +25,8 @@ namespace Hackcreeper.LD54.Robot.Components
 
         [SerializeField] private Transform center;
 
+        [SerializeField] private RobotBrain robot;
+
         #endregion
 
         #region VARIABLES
@@ -33,9 +34,11 @@ namespace Hackcreeper.LD54.Robot.Components
         private ModuleMode _mode = ModuleMode.Placed;
         private Camera _mainCamera;
         private AttachmentArea _activeAttachmentArea;
-        
-        private readonly Dictionary<AttachmentSide, RobotModule> _attachedModules = new();
+        private Vector3Int _gridPosition = Vector3Int.zero;
+
         private readonly Dictionary<AttachmentSide, AttachmentArea> _attachmentAreas = new();
+
+        [Inject] private readonly SignalBus _signalBus;
 
         #endregion
 
@@ -59,6 +62,25 @@ namespace Hackcreeper.LD54.Robot.Components
             transform.position = _mainCamera.ScreenToWorldPoint(mousePosition);
         }
 
+        private void OnDisable()
+        {
+            _signalBus.Unsubscribe<ModuleAttachedSignal>(OnModulePlaced);
+        }
+
+        #endregion
+
+        #region EVENT LISTENERS
+
+        private void OnModulePlaced(ModuleAttachedSignal signal)
+        {
+            RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(-1, 0, 0), AttachmentSide.Left);
+            RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(1, 0, 0), AttachmentSide.Right);
+            RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(0, 0, 1), AttachmentSide.Front);
+            RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(0, 0, -1), AttachmentSide.Back);
+            RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(0, 0, 1), AttachmentSide.Top);
+            RemoveIfCoordinatesMatch(signal.Coordinates, new Vector3Int(0, 0, -1), AttachmentSide.Bottom);
+        }
+
         #endregion
 
         #region PUBLIC METHODS
@@ -72,21 +94,29 @@ namespace Hackcreeper.LD54.Robot.Components
         {
             var trans = transform;
             var areaTrans = area.transform;
-            
+
             _mode = ModuleMode.StickyPlaceholder;
             trans.position = areaTrans.position;
             trans.rotation = areaTrans.rotation;
-            
+
             _activeAttachmentArea = area;
         }
 
-        public void Place(Vector3 position, Vector3 rotation)
+        public void Place(Vector3 position, Vector3 rotation, Vector3Int gridPos, RobotBrain brain)
         {
+            robot = brain;
+
             _mode = ModuleMode.Placed;
+            _gridPosition = gridPos;
+
             transform.position = position;
             transform.rotation = Quaternion.Euler(rotation);
 
+            _signalBus.Fire(new ModuleAttachedSignal(this, gridPos));
+
             SpawnAttachments();
+
+            _signalBus.Subscribe<ModuleAttachedSignal>(OnModulePlaced);
         }
 
         public void PlaceAtActiveArea()
@@ -99,33 +129,71 @@ namespace Hackcreeper.LD54.Robot.Components
 
         public bool CanBePlaced() => _mode == ModuleMode.StickyPlaceholder;
 
-        private void AttachModule(AttachmentSide side, RobotModule module)
-        {
-            _attachedModules.Add(side, module);
-            module.Place(center.position, GetRotation(side));
-            module.transform.SetParent(transform);
-
-            if (!_attachmentAreas.ContainsKey(side))
-            {
-                return;
-            }
-            
-            Destroy(_attachmentAreas[side].gameObject);
-            _attachmentAreas.Remove(side);
-        }
-        
         #endregion
 
         #region PRIVATE METHODS
 
+        private void AttachModule(AttachmentSide side, RobotModule module)
+        {
+            var newGridPos = _gridPosition + side switch
+            {
+                AttachmentSide.Top => new Vector3Int(0, 1, 0),
+                AttachmentSide.Bottom => new Vector3Int(0, -1, 0),
+                AttachmentSide.Left => new Vector3Int(-1, 0, 0),
+                AttachmentSide.Right => new Vector3Int(1, 0, 0),
+                AttachmentSide.Front => new Vector3Int(0, 0, 1),
+                AttachmentSide.Back => new Vector3Int(0, 0, -1),
+                _ => throw new ArgumentOutOfRangeException(nameof(side), side, null)
+            };
+
+            module.Place(center.position, GetRotation(side), newGridPos, robot);
+            module.transform.SetParent(transform);
+
+            DestroyAttachmentArea(side);
+        }
+
+        private void DestroyAttachmentArea(AttachmentSide side)
+        {
+            if (!_attachmentAreas.ContainsKey(side))
+            {
+                return;
+            }
+
+            Destroy(_attachmentAreas[side].gameObject);
+            _attachmentAreas.Remove(side);
+        }
+
         private void SpawnAttachments()
         {
-            if (allowAttachmentTop) SpawnAttachment(AttachmentSide.Top);
-            if (allowAttachmentBottom) SpawnAttachment(AttachmentSide.Bottom);
-            if (allowAttachmentLeft) SpawnAttachment(AttachmentSide.Left);
-            if (allowAttachmentRight) SpawnAttachment(AttachmentSide.Right);
-            if (allowAttachmentFront) SpawnAttachment(AttachmentSide.Front);
-            if (allowAttachmentBack) SpawnAttachment(AttachmentSide.Back);
+            if (allowAttachmentTop && !robot.HasModuleAt(_gridPosition + new Vector3Int(0, 1, 0)))
+            {
+                SpawnAttachment(AttachmentSide.Top);
+            }
+
+            if (allowAttachmentBottom && !robot.HasModuleAt(_gridPosition + new Vector3Int(0, -1, 0)))
+            {
+                SpawnAttachment(AttachmentSide.Bottom);
+            }
+
+            if (allowAttachmentLeft && !robot.HasModuleAt(_gridPosition + new Vector3Int(-1, 0, 0)))
+            {
+                SpawnAttachment(AttachmentSide.Left);
+            }
+
+            if (allowAttachmentRight && !robot.HasModuleAt(_gridPosition + new Vector3Int(1, 0, 0)))
+            {
+                SpawnAttachment(AttachmentSide.Right);
+            }
+
+            if (allowAttachmentFront && !robot.HasModuleAt(_gridPosition + new Vector3Int(0, 0, 1)))
+            {
+                SpawnAttachment(AttachmentSide.Front);
+            }
+
+            if (allowAttachmentBack && !robot.HasModuleAt(_gridPosition + new Vector3Int(0, 0, -1)))
+            {
+                SpawnAttachment(AttachmentSide.Back);
+            }
         }
 
         private static Vector3 GetRotation(AttachmentSide side)
@@ -147,10 +215,20 @@ namespace Hackcreeper.LD54.Robot.Components
             var area = Instantiate(attachmentAreaPrefab, transform);
             area.transform.position = center.position;
             area.transform.rotation = Quaternion.Euler(GetRotation(side));
-            
+
             var areaComponent = area.GetComponent<AttachmentArea>();
             areaComponent.Initialize(this, side);
             _attachmentAreas.Add(side, areaComponent);
+        }
+
+        private void RemoveIfCoordinatesMatch(Vector3Int coords, Vector3Int offset, AttachmentSide side)
+        {
+            if (coords != _gridPosition + offset)
+            {
+                return;
+            }
+
+            DestroyAttachmentArea(side);
         }
 
         #endregion

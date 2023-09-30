@@ -8,24 +8,29 @@ namespace Hackcreeper.LD54.Robot.Components
     {
         #region EXPOSED FIELDS
 
-        [SerializeField] private ModuleSo coreBlock;
+        [SerializeField] private RobotBrain robot;
+        
         [SerializeField] private ModuleSo[] availableModules;
         [SerializeField] private LayerMask attachmentAreaLayerMask;
 
         #endregion
-        
+
         #region VARIABLES
 
         private RobotModule _activeModule;
 
         #endregion
-        
+
         #region LIFECYCLE METHODS
-        
+
         private void Start()
         {
-            var module = Instantiate(coreBlock.prefab);
-            module.GetComponent<RobotModule>().Place(Vector3.zero, Vector3.zero);
+            robot.GetCoreModule().Place(
+                Vector3.zero,
+                Vector3.zero,
+                Vector3Int.zero,
+                robot
+            );
         }
 
         private void Update()
@@ -37,47 +42,47 @@ namespace Hackcreeper.LD54.Robot.Components
                     PlaceActiveModule();
                     return;
                 }
-                
+
                 MoveActiveModule();
                 return;
             }
-            
+
             if (!Input.GetKeyDown(KeyCode.A))
             {
                 return;
             }
-            
+
             var randomModule = availableModules[UnityEngine.Random.Range(0, availableModules.Length)];
             var module = Instantiate(randomModule.prefab);
             module.GetComponent<RobotModule>().EnablePlaceholderMode();
 
             _activeModule = module.GetComponent<RobotModule>();
         }
-        
-        #endregion
 
+        #endregion
+        
         #region PRIVATE METHODS
 
         private void MoveActiveModule()
         {
             var target = CustomCameraHelper.RayFromMouseToTarget(Camera.main, attachmentAreaLayerMask);
-            
+
             if (target)
             {
                 _activeModule.LockInPlace(target.GetComponentInParent<AttachmentArea>());
                 return;
             }
-            
+
             _activeModule.EnablePlaceholderMode();
         }
-        
+
         private void PlaceActiveModule()
         {
             if (!_activeModule.CanBePlaced())
             {
                 return;
             }
-            
+
             _activeModule.PlaceAtActiveArea();
             _activeModule = null;
         }

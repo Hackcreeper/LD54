@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 929637481682610728}
   - component: {fileID: 2909944460539061976}
+  - component: {fileID: 4678149125286146131}
   m_Layer: 0
   m_Name: CoreBlock
   m_TagString: Untagged
@@ -55,6 +56,19 @@ MonoBehaviour:
   attachmentAreaPrefab: {fileID: 3074376381264656350, guid: 754d241305bd7467db66a5b5f8dcb92d,
     type: 3}
   center: {fileID: 6136558975836780691}
+--- !u!114 &4678149125286146131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5920098198575181818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef2162bb396b2461fad3bfd8ae789256, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _containerSource: 1
 --- !u!1001 &5954839103576022904
 PrefabInstance:
   m_ObjectHideFlags: 0

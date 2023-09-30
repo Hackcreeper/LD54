@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6699554717033945772}
   - component: {fileID: 6326975340931237726}
+  - component: {fileID: 2349946764994493628}
   m_Layer: 0
   m_Name: BasicCube
   m_TagString: Untagged
@@ -55,6 +56,19 @@ MonoBehaviour:
   attachmentAreaPrefab: {fileID: 3074376381264656350, guid: 754d241305bd7467db66a5b5f8dcb92d,
     type: 3}
   center: {fileID: 2394922988109244527}
+--- !u!114 &2349946764994493628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7262256424283934541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef2162bb396b2461fad3bfd8ae789256, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _containerSource: 1
 --- !u!1001 &4085451780424374282
 PrefabInstance:
   m_ObjectHideFlags: 0

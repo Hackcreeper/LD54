@@ -2,7 +2,8 @@
     "name": "Game",
     "rootNamespace": "Hackcreeper.LD54",
     "references": [
-        "GUID:4d6070404d0419b458bac1694fc1ad45"
+        "GUID:4d6070404d0419b458bac1694fc1ad45",
+        "GUID:50ca6016748204b04950f89ee0e3b989"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
