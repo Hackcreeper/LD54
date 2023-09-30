@@ -73,7 +73,7 @@ namespace Hackcreeper.LD54.Robot.Components
 
         private void OnDisable()
         {
-            _signalBus.Unsubscribe<ModuleAttachedSignal>(OnModulePlaced);
+            _signalBus.TryUnsubscribe<ModuleAttachedSignal>(OnModulePlaced);
         }
 
         #endregion

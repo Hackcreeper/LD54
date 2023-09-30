@@ -45,6 +45,13 @@ namespace Hackcreeper.LD54.Robot.Components
                 _activeModule.SetErrorState(
                     !_activeModule.CanBePlaced() || robot.Count(ModuleType.Structure) >= _robotLimit.MaxStructureModules                
                 );
+
+                if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace))
+                {
+                    Destroy(_activeModule.gameObject);
+                    _activeModule = null;
+                    return;
+                }
                 
                 if (Input.GetMouseButtonDown(0))
                 {
