@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 929637481682610728}
   - component: {fileID: 2909944460539061976}
-  - component: {fileID: 4678149125286146131}
+  - component: {fileID: 2073613607353540270}
   m_Layer: 0
   m_Name: CoreBlock
   m_TagString: Untagged
@@ -46,7 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9846e3152df8c4ad4a441d834b80632d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  configuration: {fileID: 0}
   allowAttachmentTop: 1
   allowAttachmentBottom: 1
   allowAttachmentLeft: 1
@@ -56,7 +55,8 @@ MonoBehaviour:
   attachmentAreaPrefab: {fileID: 3074376381264656350, guid: 754d241305bd7467db66a5b5f8dcb92d,
     type: 3}
   center: {fileID: 6136558975836780691}
---- !u!114 &4678149125286146131
+  robot: {fileID: 0}
+--- !u!114 &2073613607353540270
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,10 +65,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5920098198575181818}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef2162bb396b2461fad3bfd8ae789256, type: 3}
+  m_Script: {fileID: 11500000, guid: 3101327f687b4a79886191706295f4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _containerSource: 1
+  coreModule: {fileID: 2909944460539061976}
 --- !u!1001 &5954839103576022904
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -127,6 +127,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4683669308469848369, guid: d59d56ae7cf224331908627addf99c65,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5a4dd22b419db4004a9e1e9fd152cfb8, type: 2}
     - target: {fileID: -4683669308469848369, guid: d59d56ae7cf224331908627addf99c65,
         type: 3}
       propertyPath: m_Materials.Array.data[2]
