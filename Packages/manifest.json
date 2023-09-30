@@ -2,6 +2,7 @@
   "dependencies": {
     "com.unidi.signals": "https://github.com/UniDi/UniDi-Signals.git",
     "com.unidi.unidi": "https://github.com/UniDi/UniDi.git",
+    "com.unity.cinemachine": "2.9.7",
     "com.unity.ide.rider": "3.0.24",
     "com.unity.render-pipelines.universal": "14.0.8",
     "com.unity.textmeshpro": "3.0.6",
