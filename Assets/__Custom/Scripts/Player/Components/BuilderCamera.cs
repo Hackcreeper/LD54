@@ -1,3 +1,5 @@
+using Hackcreeper.LD54.LogicEditor.Signals;
+using UniDi;
 using UnityEngine;
 
 namespace Hackcreeper.LD54.Player.Components
@@ -17,23 +19,41 @@ namespace Hackcreeper.LD54.Player.Components
         private Vector3 _lastMousePosition;
         private Vector2 _rotationAngle = new(250 * Mathf.Deg2Rad, 5f);
         private bool _firstFrame = true;
+        private bool _canMove = true;
 
-        #endregion 
+        [Inject] private readonly SignalBus _signalBus;
 
-        #region UPDATE
+        #endregion
+
+        #region LIFECYCLE METHODS
+
+        private void OnEnable()
+        {
+            _signalBus.Subscribe<LogicEditorToggledSignal>(OnLogicEditorToggled);
+        }
+
+        private void OnDisable()
+        {
+            _signalBus.Unsubscribe<LogicEditorToggledSignal>(OnLogicEditorToggled);
+        }
 
         private void Update()
         {
+            if (!_canMove)
+            {
+                return;
+            }
+            
             if (Input.GetMouseButton(1) || Input.GetMouseButton(2))
             {
                 if (!_firstFrame)
                 {
                     var deltaX = (_lastMousePosition.x - Input.mousePosition.x) * Time.deltaTime;
                     var deltaY = (Input.mousePosition.y - _lastMousePosition.y) * Time.deltaTime;
-                    
+
                     _rotationAngle.x += deltaX;
                     _rotationAngle.y += deltaY;
-                    
+
                     const float minPitch = 2f;
                     const float maxPitch = 7f;
 
@@ -54,12 +74,21 @@ namespace Hackcreeper.LD54.Player.Components
             var r = distance;
             var theta = _rotationAngle.y * Mathf.Deg2Rad * rotationSpeed;
             var phi = _rotationAngle.x * Mathf.Deg2Rad * rotationSpeed;
-            
+
             transform.position = new Vector3(
                 r * Mathf.Sin(theta) * Mathf.Cos(phi),
                 r * Mathf.Cos(theta),
                 r * Mathf.Sin(theta) * Mathf.Sin(phi)
             );
+        }
+
+        #endregion
+
+        #region EVENT LISTENERS
+
+        private void OnLogicEditorToggled(LogicEditorToggledSignal signal)
+        {
+            _canMove = !signal.Open;
         }
 
         #endregion

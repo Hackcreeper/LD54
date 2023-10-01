@@ -1,4 +1,5 @@
 using Hackcreeper.LD54.Helper;
+using Hackcreeper.LD54.LogicEditor.Signals;
 using Hackcreeper.LD54.Robot.Data;
 using Hackcreeper.LD54.Robot.Enums;
 using Hackcreeper.LD54.Robot.Systems;
@@ -49,11 +50,13 @@ namespace Hackcreeper.LD54.Robot.Components
         private void OnEnable()
         {
             _signalBus.Subscribe<ModuleSelectedSignal>(OnModuleSelected);
+            _signalBus.Subscribe<LogicEditorToggledSignal>(OnLogicEditorToggled);
         }
-
+        
         private void OnDisable()
         {
             _signalBus.Unsubscribe<ModuleSelectedSignal>(OnModuleSelected);
+            _signalBus.Unsubscribe<LogicEditorToggledSignal>(OnLogicEditorToggled);
         }
 
         private void Update()
@@ -106,6 +109,17 @@ namespace Hackcreeper.LD54.Robot.Components
             module.transform.position = _camera.ScreenToWorldPoint(mousePosition) - offset;
         }
 
+        private void OnLogicEditorToggled(LogicEditorToggledSignal signal)
+        {
+            if (!_activeModule)
+            {
+                return;
+            }
+            
+            Destroy(_activeModule.gameObject);
+            _activeModule = null;
+        }
+        
         #endregion
 
         #region PUBLIC METHODS

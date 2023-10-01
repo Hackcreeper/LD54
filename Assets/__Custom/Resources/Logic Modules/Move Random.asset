@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3b04b25e14e4d34ab15b483a8041053, type: 3}
+  m_Name: Move Random
+  m_EditorClassIdentifier: 
+  label: Move in random direction
+  uiPrefab: {fileID: 1646795001936169890, guid: 6db334e776cc24a5aa3ce5b89d198b75,
+    type: 3}
