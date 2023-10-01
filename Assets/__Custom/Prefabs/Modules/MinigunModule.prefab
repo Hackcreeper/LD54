@@ -47,7 +47,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: aa5c80f5405334033aaf982fb37091a5, type: 2}
-  scaleRules: []
+  scaleRules:
+  - side: 3
+    scale: {x: -1, y: 1, z: 1}
   rotationRules:
   - side: 4
     scale: {x: 0, y: 0, z: 0}
@@ -76,7 +78,7 @@ MonoBehaviour:
   errorMaterial: {fileID: 2100000, guid: 647cf776070904ebdbc4176a50d96ed7, type: 2}
   meshRenderers:
   - {fileID: 4261108902553388369}
-  - {fileID: 4928438758444647230}
+  - {fileID: 0}
   - {fileID: 5837760332545593900}
 --- !u!114 &-7510286720174404217
 MonoBehaviour:
@@ -184,12 +186,6 @@ Transform:
 --- !u!23 &4261108902553388369 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -8515743578739334750, guid: e9bf3050097114f5e82d177c736e422f,
-    type: 3}
-  m_PrefabInstance: {fileID: 3670574078036452595}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &4928438758444647230 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: -678588488315902003, guid: e9bf3050097114f5e82d177c736e422f,
     type: 3}
   m_PrefabInstance: {fileID: 3670574078036452595}
   m_PrefabAsset: {fileID: 0}
