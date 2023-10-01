@@ -24,7 +24,7 @@ namespace Hackcreeper.LD54.Player.Components
 
         private void Update()
         {
-            if (Input.GetMouseButton(1))
+            if (Input.GetMouseButton(1) || Input.GetMouseButton(2))
             {
                 if (!_firstFrame)
                 {

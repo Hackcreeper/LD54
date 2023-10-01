@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Hackcreeper.LD54.Robot.Data;
+using Hackcreeper.LD54.Robot.Enums;
 using Hackcreeper.LD54.Ui.Signals;
 using TMPro;
 using UniDi;
@@ -14,6 +15,7 @@ namespace Hackcreeper.LD54.Ui.Components
 
         [SerializeField] private Image icon;
         [SerializeField] private TextMeshProUGUI label;
+        [SerializeField] private GameObject costsBadge;
         [SerializeField] private TextMeshProUGUI costs;
         [SerializeField] private Button button;
 
@@ -31,6 +33,8 @@ namespace Hackcreeper.LD54.Ui.Components
         {
             icon.sprite = module.icon;
             label.text = module.label;
+            
+            costsBadge.SetActive(module.type == ModuleType.Upgrade);
             costs.text = module.costs.ToString();
 
             StartCoroutine(RoutineRegisterListener(module));

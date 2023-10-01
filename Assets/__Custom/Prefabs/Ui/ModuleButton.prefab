@@ -348,6 +348,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 4393761432417411026}
   label: {fileID: 7352465467289240655}
+  costsBadge: {fileID: 4974766600297184318}
   costs: {fileID: 7586054239252294757}
   button: {fileID: 3186804475843139691}
 --- !u!114 &7834524004110046708
