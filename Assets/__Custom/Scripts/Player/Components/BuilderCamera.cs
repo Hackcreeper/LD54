@@ -48,7 +48,7 @@ namespace Hackcreeper.LD54.Player.Components
                 _firstFrame = true;
             }
 
-            distance += Input.mouseScrollDelta.y * Time.deltaTime * scrollSpeed;
+            distance += -Input.mouseScrollDelta.y * Time.deltaTime * scrollSpeed;
             distance = Mathf.Clamp(distance, 3f, 15f);
 
             var r = distance;
