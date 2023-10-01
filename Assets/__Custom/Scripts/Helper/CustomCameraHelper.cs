@@ -1,8 +1,9 @@
+#nullable enable
 using UnityEngine;
 
 namespace Hackcreeper.LD54.Helper
 {
-    public class CustomCameraHelper
+    public static class CustomCameraHelper
     {
         public static Transform? RayFromMouseToTarget(Camera camera, LayerMask layerMask)
         {

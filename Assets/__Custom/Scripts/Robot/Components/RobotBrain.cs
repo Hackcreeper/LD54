@@ -14,7 +14,7 @@ namespace Hackcreeper.LD54.Robot.Components
         [SerializeField] private RobotModule coreModule;
 
         #endregion
-        
+
         #region VARIABLES
 
         private readonly Dictionary<Vector3Int, RobotModule> _modules = new();
@@ -43,20 +43,19 @@ namespace Hackcreeper.LD54.Robot.Components
         {
             _modules.Add(signal.Coordinates, signal.Module);
         }
-        
+
         #endregion
-        
+
         #region PUBLIC METHODS
 
         public bool HasModuleAt(Vector3Int coords) => _modules.ContainsKey(coords);
 
         public RobotModule GetCoreModule() => coreModule;
 
-        public int Count(ModuleType type)
-        {
-            return _modules.Values.Count(module => module.GetConfig().type == type);
-        }
-        
+        public int Count(ModuleType type) => _modules.Values.Count(module => module.GetConfig().type == type);
+
+        public int GetTotalModuleCosts() => _modules.Values.Sum(module => module.GetConfig().costs);
+
         #endregion
     }
 }

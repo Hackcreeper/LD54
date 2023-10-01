@@ -10,6 +10,7 @@ namespace Hackcreeper.LD54.Robot.Di
         {
             SignalBusInstaller.Install(Container);
             Container.DeclareSignal<ModuleAttachedSignal>();
+            Container.DeclareSignal<AfterModuleAttachedSignal>();
 
             Container.Bind<RobotLimit>().AsSingle();
         }

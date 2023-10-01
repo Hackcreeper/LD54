@@ -7,14 +7,14 @@ using UnityEngine;
 
 namespace Hackcreeper.LD54.Ui.Components
 {
-    public class StructureCounter : MonoBehaviour
+    public class ModuleCostCounter : MonoBehaviour
     {
         #region EXPOSED FIELDS
 
         [SerializeField] private TextMeshProUGUI counterText;
 
         #endregion
-
+        
         #region VARIABLES
 
         [Inject] private readonly RobotLimit _robotLimit;
@@ -35,18 +35,19 @@ namespace Hackcreeper.LD54.Ui.Components
         }
 
         #endregion
-
+        
         #region EVENT LISTENERS
 
         private void OnAfterModuleAttached(AfterModuleAttachedSignal signal)
         {
-            if (signal.Module.GetConfig().type != ModuleType.Structure)
+            if (signal.Module.GetConfig().type == ModuleType.Structure)
             {
                 return;
             }
 
-            var count = signal.Module.GetRobot().Count(ModuleType.Structure);
-            counterText.text = $"{count} / {_robotLimit.MaxStructureModules} blocks";
+            var remaining = _robotLimit.MaxModulePoints - signal.Module.GetRobot().GetTotalModuleCosts();
+            
+            counterText.text = $"{remaining} module points remaining";
         }
         
         #endregion
