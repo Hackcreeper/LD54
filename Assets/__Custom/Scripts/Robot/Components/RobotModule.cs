@@ -15,7 +15,9 @@ namespace Hackcreeper.LD54.Robot.Components
         #region EXPOSED FIELDS
 
         [Header("Config")] [SerializeField] private ModuleSo config;
-        [SerializeField] private SideScaleStruct[] scaleRules;
+        [SerializeField] private SideVector3Struct[] scaleRules;
+        [SerializeField] private SideVector3Struct[] rotationRules;
+        [SerializeField] private SideVector3Struct[] offsetRules;
 
         [Header("Attachments")] [SerializeField]
         private bool allowAttachmentTop;
@@ -27,8 +29,9 @@ namespace Hackcreeper.LD54.Robot.Components
         [SerializeField] private bool allowAttachmentBack;
 
         [Header("Attachments Rules")] [SerializeField]
-        private bool allowAttachedBottom;
+        private bool allowAttachedTop;
 
+        [SerializeField] private bool allowAttachedBottom;
         [SerializeField] private bool allowAttachedLeft;
         [SerializeField] private bool allowAttachedRight;
         [SerializeField] private bool allowAttachedFront;
@@ -132,6 +135,16 @@ namespace Hackcreeper.LD54.Robot.Components
             {
                 trans.localScale = rule.scale;
             }
+            
+            foreach (var rule in rotationRules.Where(rule => rule.side == area.GetSide()))
+            {
+                trans.localRotation = Quaternion.Euler(rule.scale);
+            }
+            
+            foreach (var rule in offsetRules.Where(rule => rule.side == area.GetSide()))
+            {
+                trans.position = areaTrans.position + rule.scale;
+            }
         }
 
         public void Place(Vector3 position, Vector3 rotation, Vector3Int gridPos, RobotBrain brain)
@@ -143,8 +156,25 @@ namespace Hackcreeper.LD54.Robot.Components
             _mode = ModuleMode.Placed;
             _gridPosition = gridPos;
 
-            transform.position = position;
-            transform.rotation = Quaternion.Euler(rotation);
+            var trans = transform;
+            trans.position = position;
+            trans.rotation = Quaternion.Euler(rotation);
+
+            var area = _activeAttachmentArea;
+            foreach (var rule in scaleRules.Where(rule => rule.side == area.GetSide()))
+            {
+                trans.localScale = rule.scale;
+            }
+            
+            foreach (var rule in rotationRules.Where(rule => rule.side == area.GetSide()))
+            {
+                trans.localRotation = Quaternion.Euler(rule.scale);
+            }
+            
+            foreach (var rule in offsetRules.Where(rule => rule.side == area.GetSide()))
+            {
+                trans.position = position + rule.scale;
+            }
 
             _signalBus.Fire(new ModuleAttachedSignal(this, gridPos));
 
@@ -184,7 +214,7 @@ namespace Hackcreeper.LD54.Robot.Components
             return (side == AttachmentSide.Back && allowAttachedBack)
                    || (side == AttachmentSide.Bottom && allowAttachedBottom)
                    || (side == AttachmentSide.Front && allowAttachedFront)
-                   || (side == AttachmentSide.Top && allowAttachmentTop)
+                   || (side == AttachmentSide.Top && allowAttachedTop)
                    || (side == AttachmentSide.Left && allowAttachedLeft)
                    || (side == AttachmentSide.Right && allowAttachedRight);
         }
@@ -209,7 +239,7 @@ namespace Hackcreeper.LD54.Robot.Components
         public AttachmentArea GetActiveAttachmentArea() => _activeAttachmentArea;
 
         public Vector3Int GetGridSize() => new(gridSizeX, gridSizeY, gridSizeZ);
-        
+
         #endregion
 
         #region PRIVATE METHODS
