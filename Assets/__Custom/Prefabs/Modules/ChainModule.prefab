@@ -61,6 +61,8 @@ MonoBehaviour:
   allowAttachedRight: 1
   allowAttachedFront: 0
   allowAttachedBack: 0
+  gridSizeX: 1
+  gridSizeZ: 2
   attachmentAreaPrefab: {fileID: 3074376381264656350, guid: 754d241305bd7467db66a5b5f8dcb92d,
     type: 3}
   center: {fileID: 2406516860226447353}

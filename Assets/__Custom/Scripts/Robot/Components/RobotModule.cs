@@ -34,6 +34,10 @@ namespace Hackcreeper.LD54.Robot.Components
         [SerializeField] private bool allowAttachedFront;
         [SerializeField] private bool allowAttachedBack;
 
+        [Header("Grid")] [SerializeField] private int gridSizeX = 1;
+        [SerializeField] private int gridSizeY = 1;
+        [SerializeField] private int gridSizeZ = 1;
+
         [Header("References")] [SerializeField]
         private GameObject attachmentAreaPrefab;
 
@@ -176,7 +180,7 @@ namespace Hackcreeper.LD54.Robot.Components
             {
                 return false;
             }
-            
+
             return (side == AttachmentSide.Back && allowAttachedBack)
                    || (side == AttachmentSide.Bottom && allowAttachedBottom)
                    || (side == AttachmentSide.Front && allowAttachedFront)
@@ -204,6 +208,8 @@ namespace Hackcreeper.LD54.Robot.Components
 
         public AttachmentArea GetActiveAttachmentArea() => _activeAttachmentArea;
 
+        public Vector3Int GetGridSize() => new(gridSizeX, gridSizeY, gridSizeZ);
+        
         #endregion
 
         #region PRIVATE METHODS
