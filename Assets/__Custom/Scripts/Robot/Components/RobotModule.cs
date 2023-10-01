@@ -211,6 +211,23 @@ namespace Hackcreeper.LD54.Robot.Components
                 return false;
             }
 
+            var coords = _activeAttachmentArea.GetCoords();
+
+            // Check if a module already exists in the size range of myself
+            for (var x = 0; x < gridSizeX; x++)
+            {
+                for (var y = 0; y < gridSizeY; y++)
+                {
+                    for (var z = 0; z < gridSizeZ; z++)
+                    {
+                        if (brain.HasModuleAt(coords + new Vector3Int(x, y, z)))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            
             return (side == AttachmentSide.Back && allowAttachedBack)
                    || (side == AttachmentSide.Bottom && allowAttachedBottom)
                    || (side == AttachmentSide.Front && allowAttachedFront)
@@ -240,13 +257,23 @@ namespace Hackcreeper.LD54.Robot.Components
 
         public Vector3Int GetGridSize() => new(gridSizeX, gridSizeY, gridSizeZ);
 
+        public Vector3Int GetGridCoords() => _gridPosition;
+        
         #endregion
 
         #region PRIVATE METHODS
 
         private void AttachModule(AttachmentSide side, RobotModule module)
         {
-            var newGridPos = _gridPosition + side switch
+            module.Place(center.position, GetRotation(side), GetNewGridPosBySide(side), robot);
+            module.transform.SetParent(transform);
+
+            DestroyAttachmentArea(side);
+        }
+
+        private Vector3Int GetNewGridPosBySide(AttachmentSide side)
+        {
+            return _gridPosition + side switch
             {
                 AttachmentSide.Top => new Vector3Int(0, 1, 0),
                 AttachmentSide.Bottom => new Vector3Int(0, -1, 0),
@@ -256,11 +283,6 @@ namespace Hackcreeper.LD54.Robot.Components
                 AttachmentSide.Back => new Vector3Int(0, 0, -1),
                 _ => throw new ArgumentOutOfRangeException(nameof(side), side, null)
             };
-
-            module.Place(center.position, GetRotation(side), newGridPos, robot);
-            module.transform.SetParent(transform);
-
-            DestroyAttachmentArea(side);
         }
 
         private void DestroyAttachmentArea(AttachmentSide side)
@@ -328,7 +350,7 @@ namespace Hackcreeper.LD54.Robot.Components
             area.transform.rotation = Quaternion.Euler(GetRotation(side));
 
             var areaComponent = area.GetComponent<AttachmentArea>();
-            areaComponent.Initialize(this, side);
+            areaComponent.Initialize(this, side, GetNewGridPosBySide(side));
             _attachmentAreas.Add(side, areaComponent);
         }
 
