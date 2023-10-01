@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Hackcreeper.LD54.Robot.Data;
 using Hackcreeper.LD54.Robot.Enums;
 using Hackcreeper.LD54.Robot.Signals;
+using Hackcreeper.LD54.Robot.Systems;
 using UniDi;
 using UnityEngine;
 
@@ -13,6 +15,7 @@ namespace Hackcreeper.LD54.Robot.Components
         #region EXPOSED FIELDS
 
         [Header("Config")] [SerializeField] private ModuleSo config;
+        [SerializeField] private SideScaleStruct[] scaleRules;
 
         [Header("Attachments")] [SerializeField]
         private bool allowAttachmentTop;
@@ -23,6 +26,18 @@ namespace Hackcreeper.LD54.Robot.Components
         [SerializeField] private bool allowAttachmentFront;
         [SerializeField] private bool allowAttachmentBack;
 
+        [Header("Attachments Rules")] [SerializeField]
+        private bool allowAttachedBottom;
+
+        [SerializeField] private bool allowAttachedLeft;
+        [SerializeField] private bool allowAttachedRight;
+        [SerializeField] private bool allowAttachedFront;
+        [SerializeField] private bool allowAttachedBack;
+
+        [Header("Grid")] [SerializeField] private int gridSizeX = 1;
+        [SerializeField] private int gridSizeY = 1;
+        [SerializeField] private int gridSizeZ = 1;
+
         [Header("References")] [SerializeField]
         private GameObject attachmentAreaPrefab;
 
@@ -31,8 +46,6 @@ namespace Hackcreeper.LD54.Robot.Components
         [SerializeField] private RobotBrain robot;
 
         [Header("Materials")] [SerializeField] private Material errorMaterial;
-        
-        [SerializeField] private Material defaultMaterial;
 
         [SerializeField] private MeshRenderer[] meshRenderers;
 
@@ -44,10 +57,13 @@ namespace Hackcreeper.LD54.Robot.Components
         private Camera _mainCamera;
         private AttachmentArea _activeAttachmentArea;
         private Vector3Int _gridPosition = Vector3Int.zero;
+        private bool _errorEnabled;
 
         private readonly Dictionary<AttachmentSide, AttachmentArea> _attachmentAreas = new();
+        private readonly List<Tuple<MeshRenderer, int, Material>> _originalMaterials = new();
 
         [Inject] private readonly SignalBus _signalBus;
+        [Inject] private readonly RobotLimit _robotLimit;
 
         #endregion
 
@@ -67,7 +83,7 @@ namespace Hackcreeper.LD54.Robot.Components
 
             // Move object to cursor
             var offset = center.transform.position - transform.position;
-            
+
             var mousePosition = Input.mousePosition;
             mousePosition.z = 10;
             transform.position = _mainCamera.ScreenToWorldPoint(mousePosition) - offset;
@@ -111,15 +127,17 @@ namespace Hackcreeper.LD54.Robot.Components
             trans.rotation = areaTrans.rotation;
 
             _activeAttachmentArea = area;
+
+            foreach (var rule in scaleRules.Where(rule => rule.side == area.GetSide()))
+            {
+                trans.localScale = rule.scale;
+            }
         }
 
         public void Place(Vector3 position, Vector3 rotation, Vector3Int gridPos, RobotBrain brain)
         {
-            foreach (var meshRenderer in meshRenderers)
-            {
-                meshRenderer.material = defaultMaterial;
-            }
-            
+            TurnOffError();
+
             robot = brain;
 
             _mode = ModuleMode.Placed;
@@ -133,6 +151,7 @@ namespace Hackcreeper.LD54.Robot.Components
             SpawnAttachments();
 
             _signalBus.Subscribe<ModuleAttachedSignal>(OnModulePlaced);
+            _signalBus.Fire(new AfterModuleAttachedSignal(this));
         }
 
         public void PlaceAtActiveArea()
@@ -143,7 +162,32 @@ namespace Hackcreeper.LD54.Robot.Components
             );
         }
 
-        public bool CanBePlaced() => _mode == ModuleMode.StickyPlaceholder;
+        public bool CanBePlaced(AttachmentSide side, RobotBrain brain)
+        {
+            if (_mode != ModuleMode.StickyPlaceholder)
+            {
+                return false;
+            }
+
+            if (config.type == ModuleType.Structure &&
+                brain.Count(ModuleType.Structure) >= _robotLimit.MaxStructureModules)
+            {
+                return false;
+            }
+
+            if (config.type == ModuleType.Upgrade &&
+                brain.GetTotalModuleCosts() + config.costs > _robotLimit.MaxModulePoints)
+            {
+                return false;
+            }
+
+            return (side == AttachmentSide.Back && allowAttachedBack)
+                   || (side == AttachmentSide.Bottom && allowAttachedBottom)
+                   || (side == AttachmentSide.Front && allowAttachedFront)
+                   || (side == AttachmentSide.Top && allowAttachmentTop)
+                   || (side == AttachmentSide.Left && allowAttachedLeft)
+                   || (side == AttachmentSide.Right && allowAttachedRight);
+        }
 
         public ModuleSo GetConfig() => config;
 
@@ -151,13 +195,20 @@ namespace Hackcreeper.LD54.Robot.Components
 
         public void SetErrorState(bool error)
         {
-            foreach (var meshRenderer in meshRenderers)
+            if (error)
             {
-                meshRenderer.material = error ? errorMaterial : defaultMaterial;
+                TurnOnError();
+                return;
             }
+
+            TurnOffError();
         }
 
         public Transform GetCenter() => center;
+
+        public AttachmentArea GetActiveAttachmentArea() => _activeAttachmentArea;
+
+        public Vector3Int GetGridSize() => new(gridSizeX, gridSizeY, gridSizeZ);
         
         #endregion
 
@@ -259,6 +310,61 @@ namespace Hackcreeper.LD54.Robot.Components
             }
 
             DestroyAttachmentArea(side);
+        }
+
+        private void TurnOnError()
+        {
+            if (_errorEnabled)
+            {
+                return;
+            }
+
+            _errorEnabled = true;
+            _originalMaterials.Clear();
+
+            Dictionary<MeshRenderer, List<Material>> materials = new();
+
+            foreach (var meshRenderer in meshRenderers)
+            {
+                for (var i = 0; i < meshRenderer.materials.Length; i++)
+                {
+                    _originalMaterials.Add(new Tuple<MeshRenderer, int, Material>(
+                        meshRenderer,
+                        i,
+                        meshRenderer.materials[i]
+                    ));
+
+                    materials.TryAdd(meshRenderer, new List<Material>());
+                    materials[meshRenderer].Add(errorMaterial);
+                }
+
+                meshRenderer.SetMaterials(materials[meshRenderer]);
+            }
+        }
+
+        private void TurnOffError()
+        {
+            if (!_errorEnabled)
+            {
+                return;
+            }
+
+            _errorEnabled = false;
+
+            Dictionary<MeshRenderer, List<Material>> materials = new();
+
+            foreach (var original in _originalMaterials)
+            {
+                materials.TryAdd(original.Item1, new List<Material>());
+                materials[original.Item1].Add(original.Item3);
+            }
+
+            foreach (var material in materials)
+            {
+                material.Key.SetMaterials(material.Value);
+            }
+
+            _originalMaterials.Clear();
         }
 
         #endregion

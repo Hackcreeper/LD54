@@ -5,6 +5,7 @@ namespace Hackcreeper.LD54.Robot.Systems
         #region EXPOSED FIELDS
 
         public int MaxStructureModules { get; private set; } = 5;
+        public int MaxModulePoints { get; private set; } = 3;
 
         #endregion
     }

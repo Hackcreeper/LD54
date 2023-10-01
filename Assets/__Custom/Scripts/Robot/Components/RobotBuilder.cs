@@ -2,6 +2,7 @@ using Hackcreeper.LD54.Helper;
 using Hackcreeper.LD54.Robot.Data;
 using Hackcreeper.LD54.Robot.Enums;
 using Hackcreeper.LD54.Robot.Systems;
+using Hackcreeper.LD54.Ui.Signals;
 using UniDi;
 using UnityEngine;
 
@@ -21,12 +22,19 @@ namespace Hackcreeper.LD54.Robot.Components
         #region VARIABLES
 
         private RobotModule _activeModule;
+        private Camera _camera;
 
         [Inject] private readonly RobotLimit _robotLimit;
+        [Inject] private readonly SignalBus _signalBus;
 
         #endregion
 
         #region LIFECYCLE METHODS
+
+        private void Awake()
+        {
+            _camera = Camera.main;
+        }
 
         private void Start()
         {
@@ -38,47 +46,71 @@ namespace Hackcreeper.LD54.Robot.Components
             );
         }
 
+        private void OnEnable()
+        {
+            _signalBus.Subscribe<ModuleSelectedSignal>(OnModuleSelected);
+        }
+
+        private void OnDisable()
+        {
+            _signalBus.Unsubscribe<ModuleSelectedSignal>(OnModuleSelected);
+        }
+
         private void Update()
+        {
+            if (!_activeModule)
+            {
+                return;
+            }
+
+            var side = _activeModule.GetActiveAttachmentArea()?.GetSide();
+
+            _activeModule.SetErrorState(!_activeModule.CanBePlaced(side ?? AttachmentSide.Back, robot));
+
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace))
+            {
+                Destroy(_activeModule.gameObject);
+                _activeModule = null;
+                return;
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                PlaceActiveModule();
+                return;
+            }
+
+            MoveActiveModule();
+        }
+
+        #endregion
+
+        #region EVENT LISTENERS
+
+        private void OnModuleSelected(ModuleSelectedSignal signal)
         {
             if (_activeModule)
             {
-                _activeModule.SetErrorState(
-                    !_activeModule.CanBePlaced() || robot.Count(ModuleType.Structure) >= _robotLimit.MaxStructureModules                
-                );
-
-                if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace))
-                {
-                    Destroy(_activeModule.gameObject);
-                    _activeModule = null;
-                    return;
-                }
-                
-                if (Input.GetMouseButtonDown(0))
-                {
-                    PlaceActiveModule();
-                    return;
-                }
-
-                MoveActiveModule();
-                return;
+                Destroy(_activeModule.gameObject);
+                _activeModule = null;
             }
 
-            if (!Input.GetKeyDown(KeyCode.A))
-            {
-                return;
-            }
+            var module = Instantiate(signal.Module.prefab);
 
-            var randomModule = availableModules[Random.Range(0, availableModules.Length)];
-            var module = Instantiate(randomModule.prefab);
-            
             _activeModule = module.GetComponent<RobotModule>();
             _activeModule.EnablePlaceholderMode();
-            
+
             var offset = _activeModule.GetCenter().position - _activeModule.transform.position;
             var mousePosition = Input.mousePosition;
             mousePosition.z = 10;
-            module.transform.position = Camera.main.ScreenToWorldPoint(mousePosition) - offset;
+            module.transform.position = _camera.ScreenToWorldPoint(mousePosition) - offset;
         }
+
+        #endregion
+
+        #region PUBLIC METHODS
+
+        public ModuleSo[] GetAvailableModules() => availableModules;
 
         #endregion
 
@@ -86,7 +118,7 @@ namespace Hackcreeper.LD54.Robot.Components
 
         private void MoveActiveModule()
         {
-            var target = CustomCameraHelper.RayFromMouseToTarget(Camera.main, attachmentAreaLayerMask);
+            var target = CustomCameraHelper.RayFromMouseToTarget(_camera, attachmentAreaLayerMask);
 
             if (target)
             {
@@ -99,7 +131,9 @@ namespace Hackcreeper.LD54.Robot.Components
 
         private void PlaceActiveModule()
         {
-            if (!_activeModule.CanBePlaced() || robot.Count(ModuleType.Structure) >= _robotLimit.MaxStructureModules)
+            var side = _activeModule.GetActiveAttachmentArea()?.GetSide();
+
+            if (!_activeModule.CanBePlaced(side ?? AttachmentSide.Top, robot))
             {
                 return;
             }
