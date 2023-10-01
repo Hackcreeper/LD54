@@ -176,7 +176,6 @@ namespace Hackcreeper.LD54.Robot.Components
 
         public void SetErrorState(bool error)
         {
-            Debug.Log(error);
             if (error)
             {
                 TurnOnError();

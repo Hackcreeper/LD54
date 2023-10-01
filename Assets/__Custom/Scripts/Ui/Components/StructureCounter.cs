@@ -45,7 +45,7 @@ namespace Hackcreeper.LD54.Ui.Components
                 return;
             }
 
-            var count = signal.Module.GetRobot().Count(ModuleType.Structure) + 1;
+            var count = signal.Module.GetRobot().Count(ModuleType.Structure);
             counterText.text = $"{count} / {_robotLimit.MaxStructureModules} blocks";
         }
         
