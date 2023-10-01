@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Hackcreeper.LD54.Robot.Data
 {
     [Serializable]
-    public struct SideScaleStruct
+    public struct SideVector3Struct
     {
         public AttachmentSide side;
         public Vector3 scale;
