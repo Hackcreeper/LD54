@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0686c8fbd4694e1da86065054b327ba3, type: 3}
   m_Name: Chain
   m_EditorClassIdentifier: 
+  label: Chains
   type: 2
   prefab: {fileID: 7150519534760150625, guid: fff5e77f4da9944e8b2a9cf7fc1c217d, type: 3}
+  costs: 1
+  icon: {fileID: 21300000, guid: 935584d8e20489e4fa09aa928ee250d5, type: 3}
